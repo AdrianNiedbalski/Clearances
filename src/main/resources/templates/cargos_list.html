@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pl-PL" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista ładunków</title>
+    <link rel="stylesheet" th:href="@{/css/cargos_list.css}">
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <h3>Menu</h3>
+        <ul>
+            <li><a href="/home">Strona główna</a></li>
+            <li><a href="/logout">Wyloguj</a></li>
+            <li><a href="/cargos/add-form">Dodaj ładunek</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h2>Lista ładunków</h2>
+
+        <div class="customs-list" th:if="${not #lists.isEmpty(cargosList)}">
+            <div th:each="cargo, iterStat : ${cargosList}" class="customs-entry">
+                <div class="customs-number-container">
+                    <div class="customs-number" th:text="${iterStat.count}">1</div>
+                </div>
+
+                <div class="customs-box">
+                    <div class="customs-row-labels">Nazwa</div>
+                    <div class="customs-row-labels">Faktura</div>
+                    <div class="customs-row-labels">Waga</div>
+                    <div class="customs-row-labels">Cena</div>
+                    <div class="customs-row-labels">Transport</div>
+
+                    <div class="customs-row-values" th:text="${cargo.name}">Towar A</div>
+                    <div class="customs-row-values" th:text="${cargo.invoiceNumber}">123/ABC</div>
+                    <div class="customs-row-values" th:text="${cargo.weight + ' kg'}">500 kg</div>
+                    <div class="customs-row-values" th:text="${cargo.price + ' PLN'}">15000 PLN</div>
+                    <div class="customs-row-values" th:text="${cargo.transportType.transportType}">Kurier</div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(cargosList)}">
+            <p>Brak dostępnych ładunków.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

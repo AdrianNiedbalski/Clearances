@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pl-PL" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Szczegóły odprawy</title>
+    <link rel="stylesheet" th:href="@{/css/customs_details.css}">
+    <script defer th:src="@{/js/customs_details.js}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <h3>Menu</h3>
+        <ul>
+            <li><a href="/home">Strona główna</a></li>
+            <li><a href="/logout">Wyloguj</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h2>Edytuj odprawę</h2>
+
+        <form th:action="@{'/customs/update/' + ${customs.id}}" method="post">
+            <div class="customs-box">
+
+                <div class="customs-row-labels">Rodzaj</div>
+                <div class="customs-row-values">
+                    <select name="customsTypeId">
+                        <option th:each="t : ${types}" th:value="${t.id}" th:selected="${t.id == customs.customsType.id}" th:text="${t.customsTypeEnum.displayName}"></option>
+                    </select>
+                </div>
+
+                <div class="customs-row-labels">Eksporter</div>
+                <div class="customs-row-values">
+                    <select name="exporterId">
+                        <option th:each="p : ${people}" th:value="${p.id}" th:selected="${p.id == customs.exporter.id}" th:text="${p.name}"></option>
+                    </select>
+                </div>
+
+                <div class="customs-row-labels">Importer</div>
+                <div class="customs-row-values">
+                    <select name="importerId">
+                        <option th:each="p : ${people}" th:value="${p.id}" th:selected="${p.id == customs.importer.id}" th:text="${p.name}"></option>
+                    </select>
+                </div>
+
+                <div class="customs-row-labels">Agent</div>
+                <div class="customs-row-values">
+                    <select name="agentId">
+                        <option th:each="a : ${agents}"
+                                th:value="${a.id}"
+                                th:selected="${a.id == customs.agent.id}"
+                                th:text="${a.person.firstName + ' ' + a.person.lastName}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="customs-row-labels">Status</div>
+                <div class="customs-row-values">
+                    <select name="status">
+                        <option th:each="s : ${statuses}" th:value="${s}" th:selected="${s == customs.status}" th:text="${s.value}"></option>
+                    </select>
+                </div>
+
+                <div class="customs-row-labels">Towar</div>
+                <div class="customs-row-values">
+                    <select name="cargosId">
+                        <option th:each="c : ${cargosList}" th:value="${c.id}" th:selected="${c.id == customs.cargos?.id}" th:text="${c.name}"></option>
+                    </select>
+                </div>
+
+                <div class="customs-row-labels">Urząd celny</div>
+                <div class="customs-row-values">
+                    <select name="customsOfficeId">
+                        <option th:each="o : ${offices}" th:value="${o.id}" th:selected="${o.id == customs.customsOffice?.id}" th:text="${o.name}"></option>
+                    </select>
+                </div>
+
+                <div class="customs-row-labels">Lokalizacja</div>
+                <div class="customs-row-values">
+                    <select name="transportLocationId">
+                        <option th:each="l : ${locations}" th:value="${l.id}" th:selected="${l.id == customs.transportLocation?.id}" th:text="${l.locationStatus}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <input type="hidden" name="customsDate" th:value="${customs.customsDate}">
+            <button type="submit">Zapisz zmiany</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,226 @@
+/* Resetowanie domyślnych stylów */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1e1e2f, #3a3a55);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* Główne kontenery */
+.container {
+    display: flex;
+    width: 90%;
+    max-width: 1900px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Lewy panel (sidebar) */
+.sidebar {
+    width: 250px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+}
+
+.sidebar h3 {
+    margin-bottom: 15px;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #fff;
+    transition: 0.3s;
+}
+
+.sidebar ul li a:hover {
+    color: #ff7f50;
+}
+
+/* Główna zawartość */
+.content {
+    flex: 1;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 10px 20px;
+    margin-left: 20px;
+}
+
+/* Lista odpraw */
+.customs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Pojedyncza odprawa */
+.customs-entry {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Numer odprawy i znak "ℹ️" po lewej */
+.customs-number-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 60px;
+}
+
+.customs-number {
+    font-size: 22px;
+    font-weight: bold;
+    width: 50px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Ikona informacji ℹ️ */
+.customs-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 80%;
+    font-size: 25px;
+    text-decoration: none;
+    color: #fff;
+    transition: 0.3s;
+}
+
+.customs-info:hover {
+    background: #ff7f50;
+    color: #000;
+}
+
+/* Blok odprawy jako tabela */
+.customs-box {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 100%;
+}
+
+/* Nagłówki tabeli */
+.customs-row-labels {
+    font-weight: bold;
+    background: #ff7f50;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+/* Wartości */
+.customs-row-values {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 10px;
+    border-radius: 6px;
+    min-height: 20px;
+}
+
+/* ✅ Stylizacja rozwijanej listy */
+select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #ff7f50;
+    background: rgba(255, 255, 255, 0.15);
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    appearance: none;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="%23ff7f50"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+}
+
+/* Po najechaniu myszką */
+select:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: #ff5722;
+}
+
+/* Po kliknięciu */
+select:focus {
+    outline: none;
+    border-color: #ff3d00;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Opcje w dropdownie */
+select option {
+    color: black;
+    background: white;
+    font-weight: bold;
+}
+
+/* ✅ Stylizacja przycisku "Zapisz" */
+button {
+    background: linear-gradient(to right, #ff7f50, #ff5722);
+    color: white;
+    height: 50px;
+    width: 150px;
+    margin-left: 30px;
+    margin-top: 7px;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    background: linear-gradient(to right, #ff5722, #d84315);
+    transform: scale(1.05);
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .customs-box {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.customs-field {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}

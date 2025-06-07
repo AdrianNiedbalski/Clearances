@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pl-PL" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista odpraw celnych</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <script defer th:src="@{/js/home.js}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <h3>Menu</h3>
+        <ul>
+            <li><a href="/customs/add-form">Dodaj odprawę</a></li>
+            <li><a href="/cargos">Towary</a></li>
+            <li><a href="/cargos/add-form">Dodaj ładunek</a></li>
+            <li><a href="/home/dashboard">Dashboard</a></li>
+            <li><a href="/logout">Wyloguj</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h2>Lista odpraw celnych</h2>
+        <div id="customsList" class="customs-list"></div>
+    </div>
+</div>
+</body>
+</html>

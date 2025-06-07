@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; }
+        .chart-container { width: 80%; margin: auto; }
+        h1 { text-align: center; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<h1>Raport miesięczny odpraw agentów</h1>
+
+<div class="chart-container">
+    <canvas id="clearanceChart"></canvas>
+</div>
+
+<script th:inline="javascript">
+    const labels = [[${labels}]];
+    const data = [[${data}]];
+
+    const ctx = document.getElementById('clearanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Liczba odpraw',
+                data: data,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Odprawy'
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
