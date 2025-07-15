@@ -1,9 +1,9 @@
 package org.example.clearances.repository;
 
-import org.example.clearances.model.CustomsType;
+import org.example.clearances.model.Cargo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CustomsTypeRepository extends JpaRepository<CustomsType, Long> {
+public interface CargoRepository extends JpaRepository<Cargo, Integer> {
 }

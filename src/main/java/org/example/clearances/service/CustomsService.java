@@ -1,104 +1,110 @@
 package org.example.clearances.service;
-import org.example.clearances.model.Agent;
-import org.example.clearances.model.Person;
+
 import org.example.clearances.dto.CustomsRequest;
-import org.example.clearances.model.*;
-import org.example.clearances.repository.*;
+import org.example.clearances.model.Cargo;
+import org.example.clearances.model.Customs;
+import org.example.clearances.model.CustomsType;
+import org.example.clearances.model.TransportType;
+import org.example.clearances.repository.CargoRepository;
+import org.example.clearances.repository.ClientRepository;
+import org.example.clearances.repository.CustomsOfficeRepository;
+import org.example.clearances.repository.CustomsRepository;
+import org.example.clearances.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomsService {
 
-    private final CustomsRepository customsRepository;
-    private final PersonRepository personRepository;
-    private final AgentRepository agentRepository;
-    private final CustomsTypeRepository customsTypeRepository;
-    private final TransportLocationRepository transportLocationRepository;
-    private final CargosRepository cargosRepository;
-    private final CustomsOfficeRepository customsOfficeRepository;
+    private final CustomsRepository customsRepo;
+    private final ClientRepository clientRepo;
+    private final EmployeeRepository employeeRepo;
+    private final CargoRepository cargoRepo;
+    private final CustomsOfficeRepository officeRepo;
 
-    public CustomsService(
-            CustomsRepository customsRepository,
-            PersonRepository personRepository,
-            AgentRepository agentRepository,
-            CustomsTypeRepository customsTypeRepository,
-            TransportLocationRepository transportLocationRepository,
-            CargosRepository cargosRepository,
-            CustomsOfficeRepository customsOfficeRepository
-    ) {
-        this.customsRepository = customsRepository;
-        this.personRepository = personRepository;
-        this.agentRepository = agentRepository;
-        this.customsTypeRepository = customsTypeRepository;
-        this.transportLocationRepository = transportLocationRepository;
-        this.cargosRepository = cargosRepository;
-        this.customsOfficeRepository = customsOfficeRepository;
+    public CustomsService(CustomsRepository customsRepo,
+                          ClientRepository clientRepo,
+                          EmployeeRepository employeeRepo,
+                          CargoRepository cargoRepo,
+                          CustomsOfficeRepository officeRepo) {
+        this.customsRepo  = customsRepo;
+        this.clientRepo   = clientRepo;
+        this.employeeRepo = employeeRepo;
+        this.cargoRepo    = cargoRepo;
+        this.officeRepo   = officeRepo;
     }
 
     @Transactional(readOnly = true)
-    public List<Customs> getAllCustoms() {
-        return customsRepository.findAll();
+    public java.util.List<CustomsRequest> getAllCustoms() {
+        return customsRepo.findAll().stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Customs addCustoms(CustomsRequest request) {
-        Customs customs = new Customs();
-        customs.setExporter(findPerson(request.getExporterId()));
-        customs.setImporter(findPerson(request.getImporterId()));
-        customs.setAgent(findAgent(request.getAgentId()));
-        customs.setCustomsType(customsTypeRepository.findById(request.getCustomsTypeId())
-                .orElseThrow(() -> new RuntimeException("Typ odprawy nie znaleziony")));
-        customs.setTransportLocation(transportLocationRepository.findById(request.getTransportLocationId())
-                .orElseThrow(() -> new RuntimeException("Lokalizacja nie znaleziona")));
-        customs.setCargos(cargosRepository.findById(request.getCargosId())
-                .orElseThrow(() -> new RuntimeException("Ładunek nie znaleziony")));
-        customs.setCustomsOffice(customsOfficeRepository.findById(request.getCustomsOfficeId())
-                .orElseThrow(() -> new RuntimeException("Urząd celny nie znaleziony")));
-        customs.setStatus(request.getStatus());
-        return customsRepository.save(customs);
+    public CustomsRequest addCustoms(CustomsRequest req) {
+        Customs c = new Customs();
+        // wymuszony status
+        c.setStatus("DO_PRZYGOTOWANIA");
+        c.setExporter(clientRepo.findById(req.getExporterId()).orElseThrow());
+        c.setImporter(clientRepo.findById(req.getImporterId()).orElseThrow());
+        c.setEmployee(employeeRepo.findById(req.getEmployeeId()).orElseThrow());
+        c.setCustomsType(CustomsType.valueOf(req.getCustomsType()).name());
+        c.setTransportLocation(TransportType.valueOf(req.getTransportLocation()).name());
+        Set<Cargo> cargos = cargoRepo.findAllById(req.getCargoIds()).stream().collect(Collectors.toSet());
+        c.setCargos(cargos);
+        c.setCustomsOffice(officeRepo.findById(req.getCustomsOfficeId()).orElseThrow());
+        Customs saved = customsRepo.save(c);
+        return toDto(saved);
     }
 
     @Transactional
-    public Customs updateStatus(Long id, CustomsStatus status) {
-        return customsRepository.findById(id)
-                .map(c -> {
-                    c.setStatus(status);
-                    return customsRepository.save(c);
-                })
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono odprawy o ID " + id));
+    public CustomsRequest updateStatus(Integer id, String newStatus) {
+        Customs c = customsRepo.findById(id).orElseThrow();
+        c.setStatus(newStatus);
+        if ("ZREALIZOWANE".equals(newStatus)) {
+            c.setCompletedAt(LocalDateTime.now());
+        }
+        return toDto(customsRepo.save(c));
     }
 
     @Transactional
-    public Optional<Customs> updateCustomsDetails(Long id, CustomsRequest request) {
-        return customsRepository.findById(id)
-                .map(customs -> {
-                    customs.setExporter(findPerson(request.getExporterId()));
-                    customs.setImporter(findPerson(request.getImporterId()));
-                    customs.setAgent(findAgent(request.getAgentId()));
-                    customs.setCustomsType(customsTypeRepository.findById(request.getCustomsTypeId())
-                            .orElseThrow(() -> new RuntimeException("Typ odprawy nie znaleziony")));
-                    customs.setTransportLocation(transportLocationRepository.findById(request.getTransportLocationId())
-                            .orElseThrow(() -> new RuntimeException("Lokalizacja nie znaleziona")));
-                    customs.setCargos(cargosRepository.findById(request.getCargosId())
-                            .orElseThrow(() -> new RuntimeException("Ładunek nie znaleziony")));
-                    customs.setCustomsOffice(customsOfficeRepository.findById(request.getCustomsOfficeId())
-                            .orElseThrow(() -> new RuntimeException("Urząd celny nie znaleziony")));
-                    customs.setStatus(request.getStatus());
-                    return customsRepository.saveAndFlush(customs);
-                });
+    public CustomsRequest updateCustomsDetails(Integer id, CustomsRequest req) {
+        Customs c = customsRepo.findById(id).orElseThrow();
+        c.setExporter(clientRepo.findById(req.getExporterId()).orElseThrow());
+        c.setImporter(clientRepo.findById(req.getImporterId()).orElseThrow());
+        c.setEmployee(employeeRepo.findById(req.getEmployeeId()).orElseThrow());
+        c.setCustomsType(CustomsType.valueOf(req.getCustomsType()).name());
+        c.setTransportLocation(TransportType.valueOf(req.getTransportLocation()).name());
+        c.setCargos(cargoRepo.findAllById(req.getCargoIds()).stream().collect(Collectors.toSet()));
+        c.setCustomsOffice(officeRepo.findById(req.getCustomsOfficeId()).orElseThrow());
+        c.setStatus(req.getStatus());
+        if ("ZREALIZOWANE".equals(req.getStatus()) && c.getCompletedAt() == null) {
+            c.setCompletedAt(LocalDateTime.now());
+        }
+        return toDto(customsRepo.save(c));
     }
 
-    private Person findPerson(Long id) {
-        return personRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Osoba nie znaleziona: ID " + id));
-    }
-
-    private Agent findAgent(Long id) {
-        return agentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Agent nie znaleziony: ID " + id));
+    private CustomsRequest toDto(Customs c) {
+        CustomsRequest dto = new CustomsRequest();
+        dto.setId(c.getId());
+        dto.setCustomsType(c.getCustomsType());
+        dto.setExporterId(c.getExporter().getId());
+        dto.setExporterName(c.getExporter().getName());
+        dto.setImporterId(c.getImporter().getId());
+        dto.setImporterName(c.getImporter().getName());
+        dto.setEmployeeId(c.getEmployee().getId());
+        dto.setEmployeeName(c.getEmployee().getLogin());
+        dto.setTransportLocation(c.getTransportLocation());
+        dto.setCargoIds(c.getCargos().stream().map(Cargo::getId).collect(Collectors.toList()));
+        dto.setCustomsOfficeId(c.getCustomsOffice().getId());
+        dto.setStatus(c.getStatus());
+        dto.setCreatedAt(c.getCreatedAt());
+        dto.setCompletedAt(c.getCompletedAt());
+        return dto;
     }
 }

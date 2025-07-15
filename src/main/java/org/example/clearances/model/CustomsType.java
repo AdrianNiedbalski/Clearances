@@ -1,28 +1,17 @@
 package org.example.clearances.model;
 
-import jakarta.persistence.*;
+public enum CustomsType {
+    EXPORT("Export"),
+    IMPORT("Import"),
+    TRANSIT("Tranzyt");
 
-@Entity
-@Table(name = "customs_types")
-public class CustomsType {
+    private final String displayName;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customs_type_id")
-    private Long id;
-
-    @Column(name = "customs_type", nullable = false)
-    private String customsType;
-
-    public Long getId() {
-        return id;
+    CustomsType(String displayName) {
+        this.displayName = displayName;
     }
 
-    public String getCustomsType() {
-        return customsType;
-    }
-
-    public void setCustomsType(String customsType) {
-        this.customsType = customsType;
+    public String getDisplayName() {
+        return displayName;
     }
 }

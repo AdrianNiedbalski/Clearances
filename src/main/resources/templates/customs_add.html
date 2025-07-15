@@ -10,74 +10,78 @@
     <div class="sidebar">
         <h3>Menu</h3>
         <ul>
-            <li><a href="/home">Strona główna</a></li>
-            <li><a href="/logout">Wyloguj</a></li>
+            <li><a th:href="@{/home}">Strona główna</a></li>
+            <li><a th:href="@{/logout}">Wyloguj</a></li>
         </ul>
     </div>
 
     <div class="content">
         <h2>Dodaj odprawę celną</h2>
 
-        <form th:action="@{/customs/save}" th:object="${customsRequest}" method="post">
-            <div class="customs-box">
+        <form th:action="@{/customs/save}"
+              th:object="${customsRequest}"
+              method="post">
 
-                <div class="customs-field">
-                    <label>Eksporter:</label>
-                    <select th:field="*{exporterId}">
-                        <option th:each="e : ${exporters}" th:value="${e.id}" th:text="${e.name}"></option>
-                    </select>
-                </div>
+            <!-- status ustawiony domyślnie w kontrolerze -->
+            <input type="hidden" th:field="*{status}" />
 
-                <div class="customs-field">
-                    <label>Importer:</label>
-                    <select th:field="*{importerId}">
-                        <option th:each="i : ${importers}" th:value="${i.id}" th:text="${i.name}"></option>
-                    </select>
-                </div>
+            <label>Eksporter:</label>
+            <select th:field="*{exporterId}" required>
+                <option value="" disabled>– wybierz –</option>
+                <option th:each="c : ${clients}"
+                        th:value="${c.id}"
+                        th:text="${c.name}"></option>
+            </select>
 
-                <div class="customs-field">
-                    <label>Agent:</label>
-                    <select th:field="*{agentId}">
-                        <option th:each="a : ${agents}" th:value="${a.id}" th:text="${a.person.firstName + ' ' + a.person.lastName}"></option>
-                    </select>
-                </div>
+            <label>Importer:</label>
+            <select th:field="*{importerId}" required>
+                <option value="" disabled>– wybierz –</option>
+                <option th:each="c : ${clients}"
+                        th:value="${c.id}"
+                        th:text="${c.name}"></option>
+            </select>
 
-                <div class="customs-field">
-                    <label>Typ odprawy:</label>
-                    <select th:field="*{customsTypeId}">
-                        <option th:each="t : ${types}" th:value="${t.id}" th:text="${t.customsType}"></option>
-                    </select>
-                </div>
+            <label>Agent:</label>
+            <select th:field="*{employeeId}" required>
+                <option value="" disabled>– wybierz –</option>
+                <option th:each="e : ${employees}"
+                        th:value="${e.id}"
+                        th:text="${e.login}"></option>
+            </select>
 
-                <div class="customs-field">
-                    <label>Miejsce transportu:</label>
-                    <select th:field="*{transportLocationId}">
-                        <option th:each="l : ${locations}" th:value="${l.id}" th:text="${l.locationStatus}"></option>
-                    </select>
-                </div>
+            <label>Typ odprawy:</label>
+            <select th:field="*{customsType}" required>
+                <option value="" disabled>– wybierz –</option>
+                <!-- wartości enuma CustomsType -->
+                <option th:each="t : ${T(org.example.clearances.model.CustomsType).values()}"
+                        th:value="${t}"
+                        th:text="${t}"></option>
+            </select>
 
-                <div class="customs-field">
-                    <label>Ładunek:</label>
-                    <select th:field="*{cargosId}">
-                        <option th:each="c : ${cargosList}" th:value="${c.id}" th:text="${c.name}"></option>
-                    </select>
-                </div>
+            <label>Miejsce transportu:</label>
+            <select th:field="*{transportLocation}" required>
+                <option value="" disabled>– wybierz –</option>
+                <!-- wartości enuma TransportType -->
+                <option th:each="l : ${T(org.example.clearances.model.TransportType).values()}"
+                        th:value="${l}"
+                        th:text="${l}"></option>
+            </select>
 
-                <div class="customs-field">
-                    <label>Urząd celny:</label>
-                    <select th:field="*{customsOfficeId}">
-                        <option th:each="o : ${offices}" th:value="${o.id}" th:text="${o.name}"></option>
-                    </select>
-                </div>
+            <label>Ładunki:</label>
+            <select th:field="*{cargoIds}" multiple size="5" required>
+                <option th:each="c : ${cargosList}"
+                        th:value="${c.id}"
+                        th:text="${c.name}"></option>
+            </select>
 
-                <div class="customs-field">
-                    <label>Status:</label>
-                    <select th:field="*{status}">
-                        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.value}"></option>
-                    </select>
-                </div>
+            <label>Urząd celny:</label>
+            <select th:field="*{customsOfficeId}" required>
+                <option value="" disabled>– wybierz –</option>
+                <option th:each="o : ${offices}"
+                        th:value="${o.id}"
+                        th:text="${o.name}"></option>
+            </select>
 
-            </div>
             <button type="submit">Zapisz</button>
         </form>
     </div>

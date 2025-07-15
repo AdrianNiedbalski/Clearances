@@ -10,42 +10,51 @@
     <div class="sidebar">
         <h3>Menu</h3>
         <ul>
-            <li><a href="/home">Strona główna</a></li>
-            <li><a href="/logout">Wyloguj</a></li>
+            <li><a th:href="@{/home}">Strona główna</a></li>
+            <li><a th:href="@{/logout}">Wyloguj</a></li>
         </ul>
     </div>
 
     <div class="content">
         <h2>Dodaj ładunek</h2>
-        <form th:action="@{/cargos/add}" th:object="${cargosRequest}" method="post">
+        <form th:action="@{/cargos/add}"
+              th:object="${cargosRequest}"
+              method="post">
+
             <div class="customs-box">
                 <div class="customs-row-labels">Nazwa</div>
                 <div class="customs-row-values">
-                    <input type="text" th:field="*{name}" required />
+                    <input type="text" th:field="*{name}" required/>
                 </div>
 
                 <div class="customs-row-labels">Numer faktury</div>
                 <div class="customs-row-values">
-                    <input type="text" th:field="*{invoiceNumber}" required />
+                    <input type="text" th:field="*{invoiceNumber}" required/>
                 </div>
 
                 <div class="customs-row-labels">Waga (kg)</div>
                 <div class="customs-row-values">
-                    <input type="number" th:field="*{weight}" min="0" step="0.01" required />
+                    <!-- typ Integer, krok 1 -->
+                    <input type="number" th:field="*{weight}" min="0" step="1" required/>
                 </div>
 
                 <div class="customs-row-labels">Cena (PLN)</div>
                 <div class="customs-row-values">
-                    <input type="number" th:field="*{price}" min="0" step="0.01" required />
+                    <!-- typ Integer, krok 1 -->
+                    <input type="number" th:field="*{price}" min="0" step="1" required/>
                 </div>
 
                 <div class="customs-row-labels">Typ transportu</div>
                 <div class="customs-row-values">
-                    <select th:field="*{transportTypeId}">
-                        <option th:each="t : ${transportTypes}" th:value="${t.id}" th:text="${t.transportType}"></option>
+                    <select th:field="*{transportType}" required>
+                        <option value="" disabled>– wybierz –</option>
+                        <option th:each="t : ${transportTypes}"
+                                th:value="${t}"
+                                th:text="${t}"></option>
                     </select>
                 </div>
             </div>
+
             <button type="submit">Zapisz ładunek</button>
         </form>
     </div>

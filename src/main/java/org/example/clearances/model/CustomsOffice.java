@@ -3,45 +3,86 @@ package org.example.clearances.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "customs_offices")
+@Table(name = "customs_office")
 public class CustomsOffice {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customs_office_id")
-    private Long id;
+    private Integer id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false, length = 255)
     private String name;
 
-    @Column(name = "office_code", nullable = false, unique = true)
+    @Column(name = "office_code", nullable = false, unique = true, length = 255)
     private String officeCode;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contact_id")
     private Contact contact;
 
     public CustomsOffice() {}
 
-    public CustomsOffice(String name, String officeCode, Address address, Contact contact) {
+    public CustomsOffice(Integer id,
+                         String name,
+                         String officeCode,
+                         Address address,
+                         Contact contact) {
+        this.id = id;
         this.name = name;
         this.officeCode = officeCode;
         this.address = address;
         this.contact = contact;
     }
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getOfficeCode() { return officeCode; }
-    public Address getAddress() { return address; }
-    public Contact getContact() { return contact; }
+    // --- Gettery i settery ---
 
-    public void setName(String name) { this.name = name; }
-    public void setOfficeCode(String officeCode) { this.officeCode = officeCode; }
-    public void setAddress(Address address) { this.address = address; }
-    public void setContact(Contact contact) { this.contact = contact; }
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getOfficeCode() {
+        return officeCode;
+    }
+    public void setOfficeCode(String officeCode) {
+        this.officeCode = officeCode;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+    public void setContact(Contact contact) {
+        this.contact = contact;
+    }
+
+    @Override
+    public String toString() {
+        return "CustomsOffice{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", officeCode='" + officeCode + '\'' +
+                ", address=" + address +
+                ", contact=" + contact +
+                '}';
+    }
 }

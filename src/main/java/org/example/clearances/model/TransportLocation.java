@@ -1,34 +1,17 @@
 package org.example.clearances.model;
 
-import jakarta.persistence.*;
+public enum TransportLocation {
+    W_DRODZE("W drodze"),
+    W_URZEDZIE("W urzędzie"),
+    KURIER("Kurier");
 
-@Entity
-@Table(name = "transport_location")
-public class TransportLocation {
+    private final String displayName;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "transport_location_id")
-    private Long id;
-
-    @Column(name = "location_status", nullable = false)
-    private String locationStatus;
-
-    public TransportLocation() {}
-
-    public TransportLocation(String locationStatus) {
-        this.locationStatus = locationStatus;
+    TransportLocation(String displayName) {
+        this.displayName = displayName;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getLocationStatus() {
-        return locationStatus;
-    }
-
-    public void setLocationStatus(String locationStatus) {
-        this.locationStatus = locationStatus;
+    public String getDisplayName() {
+        return displayName;
     }
 }

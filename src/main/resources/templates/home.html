@@ -4,24 +4,57 @@
     <meta charset="UTF-8">
     <title>Lista odpraw celnych</title>
     <link rel="stylesheet" th:href="@{/css/home.css}">
-    <script defer th:src="@{/js/home.js}"></script>
 </head>
 <body>
 <div class="container">
     <div class="sidebar">
         <h3>Menu</h3>
         <ul>
-            <li><a href="/customs/add-form">Dodaj odprawę</a></li>
-            <li><a href="/cargos">Towary</a></li>
-            <li><a href="/cargos/add-form">Dodaj ładunek</a></li>
-            <li><a href="/home/dashboard">Dashboard</a></li>
-            <li><a href="/logout">Wyloguj</a></li>
+            <li><a th:href="@{/customs/add-form}">Dodaj odprawę</a></li>
+            <li><a th:href="@{/cargos}">Towary</a></li>
+            <li><a th:href="@{/cargos/add-form}">Dodaj ładunek</a></li>
+            <li><a th:href="@{/logout}">Wyloguj</a></li>
         </ul>
     </div>
 
     <div class="content">
         <h2>Lista odpraw celnych</h2>
-        <div id="customsList" class="customs-list"></div>
+
+        <div id="customsList">
+            <!-- brak danych -->
+            <!-- lista odpraw -->
+            <div th:each="c,iterStat : ${customsList}" class="customs-entry">
+                <div class="customs-number-container">
+                    <div class="customs-number" th:text="${iterStat.index + 1}">1</div>
+                    <a th:href="@{|/customs/details/${c.id}|}" class="customs-info">ℹ️</a>
+                </div>
+                <div class="customs-box">
+                    <!-- nagłówki -->
+                    <div class="customs-row-labels">Rodzaj</div>
+                    <div class="customs-row-labels">Eksporter</div>
+                    <div class="customs-row-labels">Importer</div>
+                    <div class="customs-row-labels">Agent</div>
+                    <div class="customs-row-labels">Status</div>
+                    <div class="customs-row-labels">Data utworzenia</div>
+                    <div class="customs-row-labels">Data zakończenia</div>
+
+                    <!-- wartości -->
+                    <div class="customs-row-values" th:text="${c.customsType}">EXPORT</div>
+                    <div class="customs-row-values" th:text="${c.exporterName}">Eksporter</div>
+                    <div class="customs-row-values" th:text="${c.importerName}">Importer</div>
+                    <div class="customs-row-values" th:text="${c.employeeName}">Agent</div>
+                    <div class="customs-row-values" th:text="${c.status}">DO_PRZYGOTOWANIA</div>
+                    <div class="customs-row-values"
+                         th:text="${#temporals.format(c.createdAt, 'yyyy-MM-dd HH:mm')}">
+                        2025-07-15 12:34
+                    </div>
+                    <div class="customs-row-values"
+                         th:text="${c.completedAt != null} ? ${#temporals.format(c.completedAt, 'yyyy-MM-dd HH:mm')} : ''">
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 </body>

@@ -11,79 +11,114 @@
     <div class="sidebar">
         <h3>Menu</h3>
         <ul>
-            <li><a href="/home">Strona główna</a></li>
-            <li><a href="/logout">Wyloguj</a></li>
+            <li><a th:href="@{/home}">Strona główna</a></li>
+            <li><a th:href="@{/logout}">Wyloguj</a></li>
         </ul>
     </div>
 
     <div class="content">
         <h2>Edytuj odprawę</h2>
 
-        <form th:action="@{'/customs/update/' + ${customs.id}}" method="post">
+        <form th:action="@{'/customs/' + ${customs.id}}" method="post">
             <div class="customs-box">
 
+                <!-- Rodzaj -->
                 <div class="customs-row-labels">Rodzaj</div>
                 <div class="customs-row-values">
-                    <select name="customsTypeId">
-                        <option th:each="t : ${types}" th:value="${t.id}" th:selected="${t.id == customs.customsType.id}" th:text="${t.customsTypeEnum.displayName}"></option>
+                    <select name="customsType" required>
+                        <option value="" disabled>– wybierz –</option>
+                        <option th:each="t : ${types}"
+                                th:value="${t}"
+                                th:selected="${t == customs.customsType}"
+                                th:text="${t}"></option>
                     </select>
                 </div>
 
+                <!-- Eksporter -->
                 <div class="customs-row-labels">Eksporter</div>
                 <div class="customs-row-values">
-                    <select name="exporterId">
-                        <option th:each="p : ${people}" th:value="${p.id}" th:selected="${p.id == customs.exporter.id}" th:text="${p.name}"></option>
+                    <select name="exporterId" required>
+                        <option value="" disabled>– wybierz –</option>
+                        <option th:each="c : ${clients}"
+                                th:value="${c.id}"
+                                th:selected="${c.id == customs.exporter.id}"
+                                th:text="${c.name}"></option>
                     </select>
                 </div>
 
+                <!-- Importer -->
                 <div class="customs-row-labels">Importer</div>
                 <div class="customs-row-values">
-                    <select name="importerId">
-                        <option th:each="p : ${people}" th:value="${p.id}" th:selected="${p.id == customs.importer.id}" th:text="${p.name}"></option>
+                    <select name="importerId" required>
+                        <option value="" disabled>– wybierz –</option>
+                        <option th:each="c : ${clients}"
+                                th:value="${c.id}"
+                                th:selected="${c.id == customs.importer.id}"
+                                th:text="${c.name}"></option>
                     </select>
                 </div>
 
+                <!-- Agent -->
                 <div class="customs-row-labels">Agent</div>
                 <div class="customs-row-values">
-                    <select name="agentId">
-                        <option th:each="a : ${agents}"
-                                th:value="${a.id}"
-                                th:selected="${a.id == customs.agent.id}"
-                                th:text="${a.person.firstName + ' ' + a.person.lastName}">
-                        </option>
+                    <select name="employeeId" required>
+                        <option value="" disabled>– wybierz –</option>
+                        <option th:each="e : ${employees}"
+                                th:value="${e.id}"
+                                th:selected="${e.id == customs.employee.id}"
+                                th:text="${e.login}"></option>
                     </select>
                 </div>
 
-                <div class="customs-row-labels">Status</div>
+                <!-- Status -->
+                <div class="customs-row-labels">Status odprawy</div>
                 <div class="customs-row-values">
-                    <select name="status">
-                        <option th:each="s : ${statuses}" th:value="${s}" th:selected="${s == customs.status}" th:text="${s.value}"></option>
+                    <select name="status" required>
+                        <option value="" disabled>– wybierz –</option>
+                        <option th:each="s : ${statuses}"
+                                th:value="${s}"
+                                th:selected="${s == customs.status}"
+                                th:text="${s}"></option>
                     </select>
                 </div>
 
-                <div class="customs-row-labels">Towar</div>
+                <!-- Ładunki -->
+                <div class="customs-row-labels">Ładunki</div>
                 <div class="customs-row-values">
-                    <select name="cargosId">
-                        <option th:each="c : ${cargosList}" th:value="${c.id}" th:selected="${c.id == customs.cargos?.id}" th:text="${c.name}"></option>
+                    <select name="cargoIds" multiple size="5" required>
+                        <option th:each="c : ${cargos}"
+                                th:value="${c.id}"
+                                th:selected="${#lists.contains(customs.cargos, c)}"
+                                th:text="${c.name}"></option>
                     </select>
                 </div>
 
+                <!-- Urząd celny -->
                 <div class="customs-row-labels">Urząd celny</div>
                 <div class="customs-row-values">
-                    <select name="customsOfficeId">
-                        <option th:each="o : ${offices}" th:value="${o.id}" th:selected="${o.id == customs.customsOffice?.id}" th:text="${o.name}"></option>
+                    <select name="customsOfficeId" required>
+                        <option value="" disabled>– wybierz –</option>
+                        <option th:each="o : ${offices}"
+                                th:value="${o.id}"
+                                th:selected="${o.id == customs.customsOffice.id}"
+                                th:text="${o.name}"></option>
                     </select>
                 </div>
 
+                <!-- Lokalizacja -->
                 <div class="customs-row-labels">Lokalizacja</div>
                 <div class="customs-row-values">
-                    <select name="transportLocationId">
-                        <option th:each="l : ${locations}" th:value="${l.id}" th:selected="${l.id == customs.transportLocation?.id}" th:text="${l.locationStatus}"></option>
+                    <select name="transportLocation" required>
+                        <option value="" disabled>– wybierz –</option>
+                        <option th:each="l : ${transportLocations}"
+                                th:value="${l}"
+                                th:selected="${l == customs.transportLocation}"
+                                th:text="${l}"></option>
                     </select>
                 </div>
+
             </div>
 
-            <input type="hidden" name="customsDate" th:value="${customs.customsDate}">
             <button type="submit">Zapisz zmiany</button>
         </form>
     </div>

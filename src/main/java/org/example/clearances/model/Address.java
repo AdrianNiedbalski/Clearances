@@ -3,42 +3,80 @@ package org.example.clearances.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "addresses")
+@Table(name = "address")
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "address_id")
+    private Integer id;
 
-    @Column(nullable = false)
+    @Column(name = "street", nullable = false, length = 255)
     private String street;
 
-    @Column(nullable = false)
-    private String city;
+    @Column(name = "building_number", nullable = false, length = 50)
+    private String buildingNumber;
 
-    @Column(nullable = false)
+    @Column(name = "postal_code", nullable = false, length = 20)
     private String postalCode;
 
-    @Column(nullable = false)
+    @Column(name = "city", nullable = false, length = 100)
+    private String city;
+
+    @Column(name = "country", nullable = false, length = 100)
     private String country;
 
     public Address() {}
 
-    public Address(String street, String city, String postalCode, String country) {
+    public Address(Integer id, String street, String buildingNumber, String postalCode, String city, String country) {
+        this.id = id;
         this.street = street;
-        this.city = city;
+        this.buildingNumber = buildingNumber;
         this.postalCode = postalCode;
+        this.city = city;
         this.country = country;
     }
 
-    public Long getId() { return id; }
-    public String getStreet() { return street; }
-    public String getCity() { return city; }
-    public String getPostalCode() { return postalCode; }
-    public String getCountry() { return country; }
+    // --- Gettery i settery ---
 
-    public void setStreet(String street) { this.street = street; }
-    public void setCity(String city) { this.city = city; }
-    public void setPostalCode(String postalCode) { this.postalCode = postalCode; }
-    public void setCountry(String country) { this.country = country; }
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getBuildingNumber() {
+        return buildingNumber;
+    }
+    public void setBuildingNumber(String buildingNumber) {
+        this.buildingNumber = buildingNumber;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getCity() {
+        return city;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+    public void setCountry(String country) {
+        this.country = country;
+    }
 }

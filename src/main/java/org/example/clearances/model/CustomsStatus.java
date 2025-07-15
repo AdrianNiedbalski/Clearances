@@ -1,31 +1,17 @@
 package org.example.clearances.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum CustomsStatus {
     DO_PRZYGOTOWANIA("Do przygotowania"),
     W_REALIZACJI("W realizacji"),
-    ZREALIZOWANE("ZREALIZOWANE");
+    ZREALIZOWANE("Zrealizowane");
 
-    private final String value;
+    private final String displayName;
 
-    CustomsStatus(String value) {
-        this.value = value;
+    CustomsStatus(String displayName) {
+        this.displayName = displayName;
     }
 
-    @JsonValue
-    public String getValue() {
-        return value;
-    }
-
-    @JsonCreator
-    public static CustomsStatus fromString(String text) {
-        for (CustomsStatus status : values()) {
-            if (status.value.equalsIgnoreCase(text)) {
-                return status;
-            }
-        }
-        throw new IllegalArgumentException("Nieznany status: " + text);
+    public String getDisplayName() {
+        return displayName;
     }
 }

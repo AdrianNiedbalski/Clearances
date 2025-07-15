@@ -10,9 +10,9 @@
     <div class="sidebar">
         <h3>Menu</h3>
         <ul>
-            <li><a href="/home">Strona główna</a></li>
-            <li><a href="/logout">Wyloguj</a></li>
-            <li><a href="/cargos/add-form">Dodaj ładunek</a></li>
+            <li><a th:href="@{/home}">Strona główna</a></li>
+            <li><a th:href="@{/logout}">Wyloguj</a></li>
+            <li><a th:href="@{/cargos/add-form}">Dodaj ładunek</a></li>
         </ul>
     </div>
 
@@ -20,7 +20,7 @@
         <h2>Lista ładunków</h2>
 
         <div class="customs-list" th:if="${not #lists.isEmpty(cargosList)}">
-            <div th:each="cargo, iterStat : ${cargosList}" class="customs-entry">
+            <div th:each="cargo,iterStat : ${cargosList}" class="customs-entry">
                 <div class="customs-number-container">
                     <div class="customs-number" th:text="${iterStat.count}">1</div>
                 </div>
@@ -36,7 +36,7 @@
                     <div class="customs-row-values" th:text="${cargo.invoiceNumber}">123/ABC</div>
                     <div class="customs-row-values" th:text="${cargo.weight + ' kg'}">500 kg</div>
                     <div class="customs-row-values" th:text="${cargo.price + ' PLN'}">15000 PLN</div>
-                    <div class="customs-row-values" th:text="${cargo.transportType.transportType}">Kurier</div>
+                    <div class="customs-row-values" th:text="${cargo.transportType}">Kurier</div>
                 </div>
             </div>
         </div>

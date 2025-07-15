@@ -1,7 +1,8 @@
 package org.example.clearances.model;
-import org.example.clearances.model.Agent;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "customs")
@@ -9,83 +10,127 @@ public class Customs {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "customs_id")
+    private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "customs_type_id", nullable = false)
-    private CustomsType customsType;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "exporter_id", nullable = false)
-    private Person exporter;
+    private Client exporter;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "importer_id", nullable = false)
-    private Person importer;
+    private Client importer;
 
-    @ManyToOne
-    @JoinColumn(name = "agent_id", nullable = false)
-    private Agent agent; // ✅ Agent z właściwego pakietu
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 
-    @ManyToOne
-    @JoinColumn(name = "transport_location_id", nullable = false)
-    private TransportLocation transportLocation;
+    @Column(name = "customs_type", nullable = false, length = 50)
+    private String customsType;
 
-    @ManyToOne
-    @JoinColumn(name = "cargos_id", nullable = false)
-    private Cargos cargos;
+    @Column(name = "transport_location", nullable = false, length = 50)
+    private String transportLocation;
 
-    @ManyToOne
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "customs_cargos",
+            joinColumns = @JoinColumn(name = "customs_id"),
+            inverseJoinColumns = @JoinColumn(name = "cargo_id")
+    )
+    private Set<Cargo> cargos;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customs_office_id", nullable = false)
     private CustomsOffice customsOffice;
 
-    @Enumerated(EnumType.STRING)
-    private CustomsStatus status;
+    @Column(name = "status", nullable = false, length = 50)
+    private String status;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
-    @PrePersist
-    public void prePersist() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
+    public Customs() {}
+
+    // --- Gettery i settery ---
+
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    // --- Gettery i Settery ---
+    public Client getExporter() {
+        return exporter;
+    }
+    public void setExporter(Client exporter) {
+        this.exporter = exporter;
+    }
 
-    public Long getId() { return id; }
+    public Client getImporter() {
+        return importer;
+    }
+    public void setImporter(Client importer) {
+        this.importer = importer;
+    }
 
-    public CustomsType getCustomsType() { return customsType; }
-    public void setCustomsType(CustomsType customsType) { this.customsType = customsType; }
+    public Employee getEmployee() {
+        return employee;
+    }
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
 
-    public Person getExporter() { return exporter; }
-    public void setExporter(Person exporter) { this.exporter = exporter; }
+    public String getCustomsType() {
+        return customsType;
+    }
+    public void setCustomsType(String customsType) {
+        this.customsType = customsType;
+    }
 
-    public Person getImporter() { return importer; }
-    public void setImporter(Person importer) { this.importer = importer; }
+    public String getTransportLocation() {
+        return transportLocation;
+    }
+    public void setTransportLocation(String transportLocation) {
+        this.transportLocation = transportLocation;
+    }
 
-    public Agent getAgent() { return agent; }
-    public void setAgent(Agent agent) { this.agent = agent; }
+    public Set<Cargo> getCargos() {
+        return cargos;
+    }
+    public void setCargos(Set<Cargo> cargos) {
+        this.cargos = cargos;
+    }
 
-    public TransportLocation getTransportLocation() { return transportLocation; }
-    public void setTransportLocation(TransportLocation transportLocation) { this.transportLocation = transportLocation; }
+    public CustomsOffice getCustomsOffice() {
+        return customsOffice;
+    }
+    public void setCustomsOffice(CustomsOffice customsOffice) {
+        this.customsOffice = customsOffice;
+    }
 
-    public Cargos getCargos() { return cargos; }
-    public void setCargos(Cargos cargos) { this.cargos = cargos; }
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-    public CustomsOffice getCustomsOffice() { return customsOffice; }
-    public void setCustomsOffice(CustomsOffice customsOffice) { this.customsOffice = customsOffice; }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
+    public void setCompletedAt(LocalDateTime completedAt) {
+        this.completedAt = completedAt;
+    }
 
-    public CustomsStatus getStatus() { return status; }
-    public void setStatus(CustomsStatus status) { this.status = status; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public LocalDateTime getCompletedAt() { return completedAt; }
-    public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

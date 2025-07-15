@@ -1,51 +1,44 @@
 package org.example.clearances.controller;
 
 import org.example.clearances.dto.CustomsRequest;
-import org.example.clearances.model.Customs;
-import org.example.clearances.model.CustomsStatus;
 import org.example.clearances.service.CustomsService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/customs")
+@RestController
+@RequestMapping("/api/customs")
 public class CustomsController {
 
-    private final CustomsService customsService;
+    private final CustomsService svc;
 
-    public CustomsController(CustomsService customsService) {
-        this.customsService = customsService;
+    public CustomsController(CustomsService svc) {
+        this.svc = svc;
     }
 
-    @GetMapping("/")
-    public String redirectToHome() {
-        return "redirect:/home";
+    @GetMapping
+    public List<CustomsRequest> getAll() {
+        return svc.getAllCustoms();
     }
 
-    @PostMapping("/save")
-    public String saveCustoms(@ModelAttribute CustomsRequest request) {
-        customsService.addCustoms(request);
-        return "redirect:/home";
+    @PostMapping
+    public CustomsRequest create(@RequestBody CustomsRequest req) {
+        return svc.addCustoms(req);
     }
 
-    @GetMapping("/data")
-    @ResponseBody
-    @Transactional(readOnly = true)
-    public ResponseEntity<List<Customs>> getAllCustoms() {
-        List<Customs> customsList = customsService.getAllCustoms();
-        return customsList.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(customsList);
+    @PatchMapping("/{id}/status")
+    public CustomsRequest updateStatus(
+            @PathVariable Integer id,
+            @RequestParam String status
+    ) {
+        return svc.updateStatus(id, status);
     }
 
-    @PutMapping("/{id}/status")
-    @ResponseBody
-    public ResponseEntity<Customs> updateCustomsStatus(@PathVariable Long id, @RequestParam CustomsStatus status) {
-        Customs updated = customsService.updateStatus(id, status);
-        return ResponseEntity.ok(updated);
+    @PutMapping("/{id}")
+    public CustomsRequest update(
+            @PathVariable Integer id,
+            @RequestBody CustomsRequest req
+    ) {
+        return svc.updateCustomsDetails(id, req);
     }
 }
